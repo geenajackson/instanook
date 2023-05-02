@@ -33,22 +33,21 @@ CREATE TABLE listings (
 );
 
 /* user_listings table
-curr_listings: user's current listings for sale
-cart_listings: listings in the user's cart 
-sold_listings: listings the user has sold
-bought_listings: listings the user has bought
+curr: user's current listings for sale
+cart: listings in the user's cart 
+sold: listings the user has sold
+bought: listings the user has bought
 */
 
 CREATE TABLE user_listings (
     id SERIAL PRIMARY KEY,
     user_id INTEGER
         REFERENCES users ON DELETE CASCADE,
-    curr_listings INTEGER
+    listing_id INTEGER
         REFERENCES listings ON DELETE CASCADE,
-    cart_listings INTEGER
-        REFERENCES listings ON DELETE CASCADE,
-    sold_listings INTEGER
-        REFERENCES listings ON DELETE CASCADE,
-    bought_listings INTEGER
-        REFERENCES listings ON DELETE CASCADE
+    listing_type TEXT NOT NULL
+        CHECK (listing_type = 'curr') or
+              (listing_type = 'cart') or
+              (listing_type = 'sold') or
+              (listing_type = 'bought')
 )
