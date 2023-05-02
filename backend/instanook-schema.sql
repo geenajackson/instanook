@@ -27,7 +27,7 @@ CREATE TABLE listings (
         REFERENCES items ON DELETE CASCADE,
     price INTEGER CHECK (price >= 0),
     time_posted TIMESTAMP NOT NULL
-        DEFAULT CURRENT_DATE,
+        DEFAULT CURRENT_TIMESTAMP,
     time_sold TIMESTAMP
         DEFAULT NULL
 );
