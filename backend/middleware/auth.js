@@ -48,7 +48,27 @@ function ensureLoggedIn(req, res, next) {
     }
 }
 
+/**ensureCorrectUser
+ * 
+ * Used to check if the current user matches the username of the route param
+ * 
+ * Raises Unauthorized error if usernames do not match.
+ */
+
+function ensureCorrectUser(req, res, next) {
+    try {
+        const user = res.locals.user;
+        if (!(user && (user.username === req.params.username))) {
+            throw new UnauthorizedError();
+        }
+        return next();
+    } catch (e) {
+        return next(e);
+    }
+}
+
 module.exports = {
     authenticateJWT,
-    ensureLoggedIn
+    ensureLoggedIn,
+    ensureCorrectUser
 }
