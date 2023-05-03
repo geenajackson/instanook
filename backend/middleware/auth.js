@@ -4,6 +4,7 @@
 
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
+const { UnauthorizedError } = require("../expressError")
 
 /*authenticateJWT
 
@@ -39,7 +40,7 @@ If false, raises an Error.
 
 function ensureLoggedIn(req, res, next) {
     try {
-        if (!res.locals.user) throw new Error();
+        if (!res.locals.user) throw new UnauthorizedError();
         return next();
     }
     catch (e) {
