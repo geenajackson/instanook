@@ -4,7 +4,7 @@
 
 const jwt = require("jsonwebtoken");
 const { UnauthorizedError } = require("../expressError");
-const { authenticateJWT, ensureLoggedIn } = require("./auth");
+const { authenticateJWT, ensureLoggedIn, ensureCorrectUser } = require("./auth");
 
 //check JWT via key from config
 const { SECRET_KEY } = require("../config");
@@ -72,5 +72,37 @@ describe("ensureLoggedIn", function () {
             expect(err instanceof UnauthorizedError).toBeTruthy();
         };
         ensureLoggedIn(req, res, next);
+    });
+});
+
+describe("ensureCorrectUser", function () {
+    test("works with matching usernames", function () {
+        expect.assertions(1);
+        const req = { params: { username: "test" } };
+        const res = { locals: { user: { username: "test" } } };
+        const next = function (err) {
+            expect(err).toBeFalsy();
+        };
+        ensureCorrectUser(req, res, next);
+    });
+
+    test("raises error with wrong usernames", function () {
+        expect.assertions(1);
+        const req = { params: { username: "wrong" } };
+        const res = { locals: { user: { username: "test" } } };
+        const next = function (err) {
+            expect(err instanceof UnauthorizedError).toBeTruthy();
+        };
+        ensureCorrectUser(req, res, next);
+    });
+
+    test("raises error with non-logged in user", function () {
+        expect.assertions(1);
+        const req = { params: { username: "test" } };
+        const res = { locals: {} };
+        const next = function (err) {
+            expect(err instanceof UnauthorizedError).toBeTruthy();
+        };
+        ensureCorrectUser(req, res, next);
     });
 });
