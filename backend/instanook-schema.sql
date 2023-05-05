@@ -5,7 +5,7 @@ Types include fish, bugs, art, fossils, villagers
 */
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
-    file_name TEXT NOT NULL,
+    file_name TEXT UNIQUE NOT NULL,
     type TEXT NOT NULL,
     name TEXT NOT NULL
 );
@@ -46,8 +46,4 @@ CREATE TABLE user_listings (
     listing_id INTEGER
         REFERENCES listings ON DELETE CASCADE,
     listing_type TEXT NOT NULL
-        CHECK (listing_type = 'curr') or
-              (listing_type = 'cart') or
-              (listing_type = 'sold') or
-              (listing_type = 'bought')
-)
+);
