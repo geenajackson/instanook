@@ -26,19 +26,19 @@ VALUES (1,
         'fish',
         'bitterling');
 
-INSERT INTO listings (id, user_id, item_id, price)
+INSERT INTO listings (id, user_id, item_id, price, time_sold)
 VALUES (1,
         1,
         1,
-        100000),
+        100000, null),
         (2,
         1,
         2,
-        500),
+        500, CURRENT_TIMESTAMP),
         (3,
         2,
         3,
-        250);
+        250, null);
 
 INSERT INTO user_listings (id, user_id, listing_id, listing_type)
 VALUES (1, 1, 1, 'curr'),
