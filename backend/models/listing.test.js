@@ -1,3 +1,5 @@
+"use strict";
+
 const db = require("../db.js");
 const { BadRequestError } = require("../expressError.js");
 const Listing = require("./listing.js")
@@ -30,10 +32,10 @@ beforeAll(
         'SW-2222-2222-2222')`)
 
         await db.query(`
-        INSERT INTO listings (id, user_id, item_id, price)
-        VALUES (1, 1, 1, 100000),
-        (2, 1, 2, 500),
-        (3, 2, 3, 250)`);
+        INSERT INTO listings (id, user_id, item_id, price, time_sold)
+        VALUES (1, 1, 1, 100000, null),
+        (2, 1, 2, 500, CURRENT_TIMESTAMP),
+        (3, 2, 3, 250, null)`);
 
         await db.query(`
         INSERT INTO user_listings (user_id, listing_id, listing_type)
@@ -82,17 +84,82 @@ describe("create", function () {
     });
 });
 
-// describe("get", function () {
-//     test("works", async function () {
+describe("get", function () {
+    test("works", async function () {
+        let listing = await Listing.get(2);
+        expect(listing).toEqual({
+            id: 2,
+            username: "testuser1",
+            item: {
+                fileName: "common_butterfly",
+                type: "bugs",
+                name: "common butterfly"
+            },
+            price: 500,
+            timePosted: expect.anything(),
+            timeSold: expect.anything(),
+            listingType: "sold"
+        })
+    });
+});
 
-//     });
-// });
-
-// describe("findAll", function () {
-//     test("works: no filter", async function () {
-
-//     });
-// });
+describe("findAll", function () {
+    test("works: no filter", async function () {
+        let listings = await Listing.findAll();
+        expect(listings).toEqual([
+            {
+                id: 1,
+                userId: 1,
+                itemName: 'Cyrano',
+                itemType: 'villagers',
+                price: 100000,
+                timePosted: expect.anything(),
+                timeSold: null,
+                listingType: 'curr'
+            },
+            {
+                id: 2,
+                userId: 1,
+                itemName: 'common butterfly',
+                itemType: 'bugs',
+                price: 500,
+                timePosted: expect.anything(),
+                timeSold: expect.anything(),
+                listingType: 'sold'
+            },
+            {
+                id: 2,
+                userId: 2,
+                itemName: 'common butterfly',
+                itemType: 'bugs',
+                price: 500,
+                timePosted: expect.anything(),
+                timeSold: expect.anything(),
+                listingType: 'bought'
+            },
+            {
+                id: 3,
+                userId: 2,
+                itemName: 'bitterling',
+                itemType: 'fish',
+                price: 250,
+                timePosted: expect.anything(),
+                timeSold: null,
+                listingType: 'curr'
+            },
+            {
+                id: 3,
+                userId: 1,
+                itemName: 'bitterling',
+                itemType: 'fish',
+                price: 250,
+                timePosted: expect.anything(),
+                timeSold: null,
+                listingType: 'cart'
+            }
+        ]);
+    });
+});
 
 // describe("addToCart", function () {
 //     test("works", async function () {
