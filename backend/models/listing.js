@@ -45,8 +45,10 @@ class Listing {
 
     /** Given a listing id, returns data about the listing.
      * 
-     * Returns {id, username, item, price, timePosted, timeSold}
+     * Returns {id, username, item, price, timePosted, timeSold, listingType}
      * where item is {fileName, type, name}
+     * 
+     * In this instance, username and listingType refers to the seller's POV
      * 
      * Throws NotFoundError if not found.
      */
@@ -57,7 +59,7 @@ class Listing {
                     item_id AS "itemId",
                     price,
                     time_posted AS "timePosted",
-                    time_sold AS "timeSold
+                    time_sold AS "timeSold"
             FROM listings
             WHERE id = $1`, [id]);
 
@@ -69,10 +71,10 @@ class Listing {
         const userRes = await db.query(
             `SELECT username
             FROM users
-            WHERE user_id = $1`, [listing.userId]);
+            WHERE id = $1`, [listing.userId]);
 
         delete listing.userId;
-        listing.username = userRes.rows[0];
+        listing.username = userRes.rows[0].username;
 
         const itemRes = await db.query(
             `SELECT file_name AS "fileName",
@@ -85,12 +87,12 @@ class Listing {
         listing.item = itemRes.rows[0];
 
         const listTypeRes = await db.query(
-            `SELECT listing_type AS "listingType",
+            `SELECT listing_type AS "listingType"
             FROM user_listings
             WHERE listing_id = $1`, [id]
         );
 
-        listing.type = listTypeRes.rows[0];
+        listing.listingType = listTypeRes.rows[0].listingType;
 
         return listing;
     }
@@ -104,7 +106,7 @@ class Listing {
    * - maxPrice
    * - listingType
    *
-   * Returns [{ id, username, item_name, item_type, price, time_posted, time_sold, listing_type }, ...]
+   * Returns [{ id, username, itemName, itemType, price, timePosted, timeSold, listingType }, ...]
    * */
 
     static async findAll({ itemType, itemName, username, maxPrice, listingType } = {}) {
@@ -114,9 +116,9 @@ class Listing {
                             i.type AS "itemType",
                             l.price,
                             l.time_posted AS "timePosted",
-                            l.time_sold AS "timeSold"
+                            l.time_sold AS "timeSold",
                             ul.listing_type AS "listingType"
-                     FROM listings AS l 
+                     FROM listings l 
                      JOIN items AS i ON i.id = l.item_id
                      JOIN user_listings AS ul ON ul.listing_id = l.id`;
         let whereExpressions = [];
@@ -164,7 +166,7 @@ class Listing {
 
         // Finalize query and return results
 
-        query += " ORDER BY timePosted";
+        query += " ORDER BY l.id";
         const listingsRes = await db.query(query, queryValues);
         return listingsRes.rows;
     }
