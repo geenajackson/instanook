@@ -169,21 +169,23 @@ class Listing {
         return listingsRes.rows;
     }
 
-
-    /** Given a listing id, updates a list type.
-     * Types include curr, cart, sold, bought.
+    /**Given a listing id and user id, adds an item to user's cart.
+     * 
+     * This sets the user_listings listing_type to "cart"
      * 
      * Returns {listing_id, listing_type}
      * 
-     * Throws NotFoundError if not found.
+     * Throws NotFoundError if no listing id found.
      */
 
-    static async updateType(id, type) {
+    static async addToCart(listingId, userId) {
         const listRes = await db.query(
-            `UPDATE user_listings
-             SET listing_type = $1
-             WHERE listing_id = $2
-             RETURNING listing_id AS "listingId", listing_type AS "listingType"`, [type, id]
+            `INSERT INTO user_listings(
+                user_id,
+                listing_id,
+                listing_type)
+             VALUES ($1, $2, $3)
+             RETURNING id AS "cartId", listing_id AS "listingId", listing_type AS "listingType"`, [userId, listingId, "cart"]
         );
 
         const listing = listRes.rows[0];
@@ -191,6 +193,74 @@ class Listing {
         if (!listing) throw new NotFoundError(`Listing not found: ${id}`);
 
         return listing;
+    }
+
+    /**Given an id from user_listings as cartId, removes listing from cart.
+    * 
+    * This deletes the entry from the table.
+    * 
+    * Returns {id}
+    * 
+     * Throws NotFoundError if no cartId found.
+    */
+
+    static async removeFromCart(cartId) {
+        const res = await db.query(
+            `DELETE
+            FROM user_listings
+            WHERE id = $1
+            RETURNING id`, [cartId]);
+
+        const listing = res.rows[0];
+
+        if (!listing) throw new NotFoundError(`No listing: ${cartId}`);
+    }
+
+    /** Given a listing id and user_id, updates a list type.
+     * Types include curr, cart, sold, bought.
+     * 
+     * Returns {listing_id, listing_type}
+     * 
+     * Throws NotFoundError if not found.
+     */
+
+    static async updateType(listingId, userId, type) {
+        const listRes = await db.query(
+            `UPDATE user_listings
+             SET listing_type = $1
+             WHERE listing_id = $2 AND user_id = $3
+             RETURNING listing_id AS "listingId", listing_type AS "listingType"`, [type, listingId, userId]
+        );
+
+        const listing = listRes.rows[0];
+
+        if (!listing) throw new NotFoundError(`Listing not found: ${id}`);
+
+        return listing;
+    }
+
+    /** Given a listing id, updates time_sold to current timestamp.
+     * Adds "sold" to seller's user_listings and "bought" to buyer's user_listings
+     * 
+     * Returns {id, time_sold}
+     * 
+     * Throws NotFoundError if not found.
+     */
+
+    static async sell(listingId, sellerId, buyerId) {
+        const listRes = await db.query(
+            `UPDATE listings
+             SET time_sold = CURRENT_TIMESTAMP
+             WHERE id = $1
+             RETURNING id, time_sold AS "timeSold"`, [listingId])
+
+        const listing = listRes.rows[0];
+
+        this.updateType(listingId, sellerId, "sold");
+        this.updateType(listingId, buyerId, "bought");
+
+        return listing;
+
     }
 }
 
