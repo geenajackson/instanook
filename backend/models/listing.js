@@ -11,6 +11,8 @@ class Listing {
      * UserId should come from logged-in user
      * Data should include {itemId, price}
      * 
+     * Adds to user_listings as a "curr" listing
+     * 
      * Returns {userId, itemId, price, timePosted}
      */
 
@@ -29,6 +31,14 @@ class Listing {
         );
 
         let listing = result.rows[0];
+
+        const currList = await db.query(
+            `INSERT INTO user_listings (user_id,
+                                        listing_id,
+                                        listing_type)
+            VALUES ($1, $2, $3)`,
+            [userId, listing.id, "curr"]
+        )
 
         return listing;
     }
@@ -73,6 +83,112 @@ class Listing {
 
         delete listing.itemId;
         listing.item = itemRes.rows[0];
+
+        const listTypeRes = await db.query(
+            `SELECT listing_type AS "listingType",
+            FROM user_listings
+            WHERE listing_id = $1`, [id]
+        );
+
+        listing.type = listTypeRes.rows[0];
+
+        return listing;
+    }
+
+    /** Find all listings (optional filter on searchFilters).
+   *
+   * searchFilters (all optional):
+   * - itemType
+   * - itemName (will find case-insensitive, partial matches)
+   * - user (will get first matching user)
+   * - maxPrice
+   * - listingType
+   *
+   * Returns [{ id, username, item_name, item_type, price, time_posted, time_sold, listing_type }, ...]
+   * */
+
+    static async findAll({ itemType, itemName, username, maxPrice, listingType } = {}) {
+        let query = `SELECT l.id,
+                            ul.user_id AS "userId",
+                            i.name AS "itemName",
+                            i.type AS "itemType",
+                            l.price,
+                            l.time_posted AS "timePosted",
+                            l.time_sold AS "timeSold"
+                            ul.listing_type AS "listingType"
+                     FROM listings AS l 
+                     JOIN items AS i ON i.id = l.item_id
+                     JOIN user_listings AS ul ON ul.listing_id = l.id`;
+        let whereExpressions = [];
+        let queryValues = [];
+
+        // For each possible search term, add to whereExpressions and
+        // queryValues so we can generate the right SQL
+
+        if (itemType !== undefined) {
+            queryValues.push(`%${itemType}%`);
+            whereExpressions.push(`itemType ILIKE $${queryValues.length}`);
+        }
+
+        if (itemName !== undefined) {
+            queryValues.push(`%${itemName}%`);
+            whereExpressions.push(`itemName ILIKE $${queryValues.length}`);
+        }
+
+        //uses the username query to find the id of user
+        if (username !== undefined) {
+            const usernameRes = await db.query(`
+            SELECT id
+            FROM users
+            WHERE username ILIKE $1`, [username]);
+
+            const userId = usernameRes.rows[0]
+
+            queryValues.push(userId);
+            whereExpressions.push(`userId = $${queryValues.length}`);
+        }
+
+        if (maxPrice !== undefined) {
+            queryValues.push(maxPrice);
+            whereExpressions.push(`price <= $${queryValues.length}`);
+        }
+
+        if (listingType !== undefined) {
+            queryValues.push(`%${listingType}%`);
+            whereExpressions.push(`listingType ILIKE $${queryValues.length}`);
+        }
+
+        if (whereExpressions.length > 0) {
+            query += " WHERE " + whereExpressions.join(" AND ");
+        }
+
+        // Finalize query and return results
+
+        query += " ORDER BY timePosted";
+        const listingsRes = await db.query(query, queryValues);
+        return listingsRes.rows;
+    }
+
+
+    /** Given a listing id, updates a list type.
+     * Types include curr, cart, sold, bought.
+     * 
+     * Returns {listing_id, listing_type}
+     * 
+     * Throws NotFoundError if not found.
+     */
+
+    static async updateType(id, type) {
+        const listRes = await db.query(
+            `UPDATE user_listings
+             SET listing_type = $1
+             WHERE listing_id = $2
+             RETURNING listing_id AS "listingId", listing_type AS "listingType"`, [type, id]
+        );
+
+        const listing = listRes.rows[0];
+
+        if (!listing) throw new NotFoundError(`Listing not found: ${id}`);
 
         return listing;
     }
