@@ -75,7 +75,7 @@ class User {
               email,
               friend_code)
             VALUES ($1, $2, $3, $4)
-            RETURNING username, email, friend_code AS "friendCode`,
+            RETURNING username, email, friend_code AS "friendCode"`,
             [
                 username,
                 hashedPassword,
@@ -91,7 +91,7 @@ class User {
 
     /** Given a username, return data about user.
      *
-     * Returns { username, email, friend_code }
+     * Returns { username, email, friendCode }
      *
      * Throws NotFoundError if user not found.
      **/
