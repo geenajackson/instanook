@@ -129,12 +129,12 @@ class Listing {
 
         if (itemType !== undefined) {
             queryValues.push(`%${itemType}%`);
-            whereExpressions.push(`itemType ILIKE $${queryValues.length}`);
+            whereExpressions.push(`i.type ILIKE $${queryValues.length}`);
         }
 
         if (itemName !== undefined) {
             queryValues.push(`%${itemName}%`);
-            whereExpressions.push(`itemName ILIKE $${queryValues.length}`);
+            whereExpressions.push(`i.name ILIKE $${queryValues.length}`);
         }
 
         //uses the username query to find the id of user
@@ -144,10 +144,10 @@ class Listing {
             FROM users
             WHERE username ILIKE $1`, [username]);
 
-            const userId = usernameRes.rows[0]
+            const userId = usernameRes.rows[0].id
 
             queryValues.push(userId);
-            whereExpressions.push(`userId = $${queryValues.length}`);
+            whereExpressions.push(`ul.user_id = $${queryValues.length}`);
         }
 
         if (maxPrice !== undefined) {
@@ -157,7 +157,7 @@ class Listing {
 
         if (listingType !== undefined) {
             queryValues.push(`%${listingType}%`);
-            whereExpressions.push(`listingType ILIKE $${queryValues.length}`);
+            whereExpressions.push(`ul.listing_type ILIKE $${queryValues.length}`);
         }
 
         if (whereExpressions.length > 0) {

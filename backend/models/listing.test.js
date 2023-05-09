@@ -66,6 +66,7 @@ afterAll(
     }
 );
 
+/************************************** create */
 describe("create", function () {
     let newListing = {
         itemId: 1,
@@ -84,6 +85,7 @@ describe("create", function () {
     });
 });
 
+/************************************** get */
 describe("get", function () {
     test("works", async function () {
         let listing = await Listing.get(2);
@@ -103,6 +105,7 @@ describe("get", function () {
     });
 });
 
+/************************************** findAll */
 describe("findAll", function () {
     test("works: no filter", async function () {
         let listings = await Listing.findAll();
@@ -159,26 +162,138 @@ describe("findAll", function () {
             }
         ]);
     });
+    test("works: by itemType", async function () {
+        let listings = await Listing.findAll({ itemType: "villagers" });
+        expect(listings).toEqual([{
+            id: 1,
+            userId: 1,
+            itemName: 'Cyrano',
+            itemType: 'villagers',
+            price: 100000,
+            timePosted: expect.anything(),
+            timeSold: null,
+            listingType: 'curr'
+        }]);
+
+    });
+    test("works: by itemName", async function () {
+        let listings = await Listing.findAll({ itemName: "common" });
+        expect(listings).toEqual([{
+            id: 2,
+            userId: 1,
+            itemName: 'common butterfly',
+            itemType: 'bugs',
+            price: 500,
+            timePosted: expect.anything(),
+            timeSold: expect.anything(),
+            listingType: 'sold'
+        },
+        {
+            id: 2,
+            userId: 2,
+            itemName: 'common butterfly',
+            itemType: 'bugs',
+            price: 500,
+            timePosted: expect.anything(),
+            timeSold: expect.anything(),
+            listingType: 'bought'
+        }]);
+    });
+    test("works: by username", async function () {
+        let listings = await Listing.findAll({ username: "testuser1" });
+        expect(listings).toEqual([{
+            id: 1,
+            userId: 1,
+            itemName: 'Cyrano',
+            itemType: 'villagers',
+            price: 100000,
+            timePosted: expect.anything(),
+            timeSold: null,
+            listingType: 'curr'
+        },
+        {
+            id: 2,
+            userId: 1,
+            itemName: 'common butterfly',
+            itemType: 'bugs',
+            price: 500,
+            timePosted: expect.anything(),
+            timeSold: expect.anything(),
+            listingType: 'sold'
+        },
+        {
+            id: 3,
+            userId: 1,
+            itemName: 'bitterling',
+            itemType: 'fish',
+            price: 250,
+            timePosted: expect.anything(),
+            timeSold: null,
+            listingType: 'cart'
+        }]);
+    });
+    test("works: by maxPrice", async function () {
+        let listings = await Listing.findAll({ maxPrice: 300 });
+        expect(listings).toEqual([{
+            id: 3,
+            userId: 2,
+            itemName: 'bitterling',
+            itemType: 'fish',
+            price: 250,
+            timePosted: expect.anything(),
+            timeSold: null,
+            listingType: 'curr'
+        },
+        {
+            id: 3,
+            userId: 1,
+            itemName: 'bitterling',
+            itemType: 'fish',
+            price: 250,
+            timePosted: expect.anything(),
+            timeSold: null,
+            listingType: 'cart'
+        }]);
+    });
+    test("works: by listingType", async function () {
+        let listings = await Listing.findAll({ listingType: "cart" });
+        expect(listings).toEqual([
+            {
+                id: 3,
+                userId: 1,
+                itemName: 'bitterling',
+                itemType: 'fish',
+                price: 250,
+                timePosted: expect.anything(),
+                timeSold: null,
+                listingType: 'cart'
+            }
+        ]);
+    });
 });
 
+/************************************** addToCart */
 // describe("addToCart", function () {
-//     test("works", async function () {
+    // test("works", async function () {
 
-//     });
+    // });
 // });
 
+/************************************** removeFromCart */
 // describe("removeFromCart", function () {
 //     test("works", async function () {
 
 //     });
 // });
 
+/************************************** updateType */
 // describe("updateType", function () {
 //     test("works", async function () {
 
 //     });
 // });
 
+/************************************** sell */
 // describe("sell", function () {
 //     test("works", async function () {
 
