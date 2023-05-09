@@ -7,7 +7,14 @@ const express = require("express");
 //Dependencies for middleware
 const cors = require("cors");
 const morgan = require("morgan");
+const { authenticateJWT } = require("./middleware/auth");
+
+//Customized Error
 const { NotFoundError } = require("./expressError");
+
+//Routes
+const authRoutes = require("./routes/auth");
+const usersRoutes = require("./routes/users")
 
 //initialize app
 const app = express();
@@ -15,6 +22,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(authenticateJWT);
+
+app.use("/auth", authRoutes);
+app.use("/users", usersRoutes);
 
 
 //404 error to match all other routes
