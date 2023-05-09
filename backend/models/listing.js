@@ -175,7 +175,7 @@ class Listing {
      * 
      * This sets the user_listings listing_type to "cart"
      * 
-     * Returns {listing_id, listing_type}
+     * Returns {cartId, listingId, listingType}
      * 
      * Throws NotFoundError if no listing id found.
      */
@@ -216,9 +216,11 @@ class Listing {
         const listing = res.rows[0];
 
         if (!listing) throw new NotFoundError(`No listing: ${cartId}`);
+
+        return (cartId)
     }
 
-    /** Given a listing id and user_id, updates a list type.
+    /** Given a listing id, user_id, and a type, updates a list type.
      * Types include curr, cart, sold, bought.
      * 
      * Returns {listing_id, listing_type}

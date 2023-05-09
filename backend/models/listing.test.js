@@ -273,29 +273,49 @@ describe("findAll", function () {
 });
 
 /************************************** addToCart */
-// describe("addToCart", function () {
-    // test("works", async function () {
-
-    // });
-// });
+describe("addToCart", function () {
+    test("works", async function () {
+        let listing = await Listing.addToCart(1, 2);
+        expect(listing).toEqual(
+            {
+                cartId: expect.any(Number),
+                listingId: 1,
+                listingType: 'cart'
+            }
+        )
+    });
+});
 
 /************************************** removeFromCart */
-// describe("removeFromCart", function () {
-//     test("works", async function () {
-
-//     });
-// });
-
-/************************************** updateType */
-// describe("updateType", function () {
-//     test("works", async function () {
-
-//     });
-// });
+describe("removeFromCart", function () {
+    test("works", async function () {
+        let cart = await Listing.addToCart(1, 2);
+        let removal = await Listing.removeFromCart(cart.cartId);
+        expect(removal).toEqual(cart.cartId);
+    });
+});
 
 /************************************** sell */
-// describe("sell", function () {
-//     test("works", async function () {
+describe("sell", function () {
+    test("works", async function () {
+        let listing = await Listing.sell(3, 2, 1);
+        let listings = await Listing.findAll({ listingType: "sold", username: "testuser2" });
+        expect(listing).toEqual({
+            id: 3,
+            timeSold: expect.anything()
+        });
+        expect(listings).toEqual([
+            {
+                id: 3,
+                userId: 2,
+                itemName: 'bitterling',
+                itemType: 'fish',
+                price: 250,
+                timePosted: expect.anything(),
+                timeSold: expect.anything(),
+                listingType: 'sold'
+            },
+        ])
 
-//     });
-// });
+    });
+});
