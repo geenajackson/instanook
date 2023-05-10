@@ -6,6 +6,7 @@ import InstanookApi from "./api";
 import Routes from "./Routes";
 import UserContext from "./UserContext";
 import useLocalStorage from "./useLocalStorage"
+import NavBar from "./Navbar";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -74,6 +75,7 @@ function App() {
   return (
     <div className="App">
       <UserContext.Provider value={user}>
+        <NavBar />
         <Routes loginUser={loginUser} logoutUser={logoutUser} registerUser={registerUser} />
       </UserContext.Provider>
     </div>
