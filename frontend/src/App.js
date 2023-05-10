@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import decode from "jwt-decode"
 import './styles/App.css';
 
+import InstanookApi from "./api";
 import Routes from "./Routes";
 import UserContext from "./UserContext";
 import useLocalStorage from "./useLocalStorage"
@@ -18,6 +19,9 @@ function App() {
         if (token) {
           try {
             let { username } = decode(token);
+            InstanookApi.token = token;
+            let res = await InstanookApi.getUser(username);
+            setUser(res.user);
           }
           catch (e) {
             console.log(e);
@@ -33,7 +37,10 @@ function App() {
 
   async function loginUser(login) {
     try {
-
+      let res = await InstanookApi.login(login);
+      setToken(res.token);
+      localStorage.setItem("token", res.token);
+      setUser(login);
     }
     catch (e) {
       return e;
@@ -43,7 +50,10 @@ function App() {
 
   async function registerUser(login) {
     try {
-
+      let res = await InstanookApi.register(login);
+      setToken(res.token);
+      localStorage.setItem("token", res.token);
+      setUser(login);
     }
     catch (e) {
       return e;
@@ -51,7 +61,8 @@ function App() {
   }
 
   function logoutUser() {
-
+    InstanookApi.logout();
+    localStorage.removeItem("token");
     setUser(null);
   }
 
