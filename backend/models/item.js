@@ -36,7 +36,7 @@ class Item {
 
     /**Add new item to database.
      * 
-     * Given a filename and a type, add checks the ACNH API to see if the item exists; if it does, it is added.
+     * Given a filename and a type, checks the ACNH API to see if the item exists; if it does, it is added.
      * 
      * Returns {id, fileName, type, name}.
      * 
@@ -64,14 +64,14 @@ class Item {
         }
     }
 
-    /**Gets item in database via id
+    /**Gets item in database via name.
      * 
      * If item is found, returns {id, fileName, type, name}
      * 
      * If not, returns NotFoundError.
      */
 
-    static async getById(id) {
+    static async getByName(name) {
         try {
             const result = await db.query(
                 `SELECT id,
@@ -79,8 +79,8 @@ class Item {
                         type,
                         name
                 FROM items
-                WHERE id = $1`,
-                [id],
+                WHERE name ILIKE $1`,
+                [`%${name}%`],
             );
 
             const item = result.rows[0];
@@ -88,7 +88,37 @@ class Item {
             return item;
         }
         catch (e) {
-            throw new NotFoundError(`Item not found: ${id}`)
+            throw new NotFoundError(`Item not found: ${name}`)
+        }
+    };
+
+    /**Gets all items in database via type.
+     * 
+     * Type includes: villagers, fish, bugs, fossils, art
+     * 
+     * Returns [{id, fileName, type, name},...]
+     * 
+     * If search cannot be completed, returns BadRequestError.
+     */
+
+    static async getAllByType(type) {
+        try {
+            const result = await db.query(
+                `SELECT id,
+                            file_name AS "fileName",
+                            type,
+                            name
+                    FROM items
+                    WHERE type ILIKE $1`,
+                [`%${type}%`],
+            );
+
+            const items = result.rows;
+
+            return items;
+        }
+        catch (e) {
+            throw new BadRequestError(`Request could not be completed: ${type}`)
         }
     };
 };
