@@ -60,6 +60,13 @@ class InstanookApi {
         let res = await this.request(`users/${username}`);
         return res;
     }
+
+    //Listing Routes
+    static async getListing(id) {
+        let res = await this.request(`listings/${id}`);
+        return res.lisitng;
+    }
+
 }
 
 
