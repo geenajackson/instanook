@@ -10,6 +10,7 @@ beforeAll(
         await db.query(`
         INSERT INTO items(file_name, type, name)
         VALUES ('bitterling', 'fish', 'bitterling'),
+        ('carp', 'fish', 'carp'),
                ('ant00', 'villagers', 'Cyrano')`);
     }
 );
@@ -33,32 +34,53 @@ afterAll(
     }
 );
 
-describe("add", function () {
-    test("adds item to db", async function () {
-        const item = await Item.add("amber", "fossils");
-        expect(item).toEqual({
-            fileName: "amber",
-            type: "fossils",
-            name: "amber"
-        });
-    });
-
-    test("raises error for invalid item", async function () {
-        try { await Item.add("invalid", "invalid"); }
-        catch (e) {
-            expect(e instanceof BadRequestError).toBeTruthy();
-        }
-
-    });
-});
-
 describe("check", function () {
     test("works for item in db", async function () {
         const item = await Item.check("bitterling");
         expect(item).toEqual({
+            id: expect.any(Number),
             fileName: "bitterling",
             type: "fish",
             name: "bitterling"
         });
     })
 })
+
+describe("getByName", function () {
+    test("works", async function () {
+        const item = await Item.getByName("bitterling");
+        const villager = await Item.getByName("cyrano");
+        expect(item).toEqual({
+            id: expect.any(Number),
+            fileName: "bitterling",
+            type: "fish",
+            name: "bitterling"
+        });
+        expect(villager).toEqual({
+            id: expect.any(Number),
+            fileName: "ant00",
+            type: "villagers",
+            name: "Cyrano"
+        });
+    });
+})
+
+describe("getAllByType", function () {
+    test("works", async function () {
+        const items = await Item.getAllByType("fish");
+        expect(items).toEqual([{
+            id: expect.any(Number),
+            fileName: "bitterling",
+            type: "fish",
+            name: "bitterling"
+        },
+        {
+            id: expect.any(Number),
+            fileName: "carp",
+            type: "fish",
+            name: "carp"
+        }]);
+
+    });
+})
+
