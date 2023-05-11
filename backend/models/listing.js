@@ -8,8 +8,7 @@ const { NotFoundError } = require("../expressError");
 class Listing {
     /**Creates a new listing
      * 
-     * UserId should come from logged-in user
-     * Data should include {itemId, price}
+     * Data should include {userId, itemId, price}
      * 
      * Adds to user_listings as a "curr" listing
      * 
@@ -24,7 +23,7 @@ class Listing {
              VALUES ($1, $2, $3)
              RETURNING user_id AS "userId", item_id AS "itemId", price, time_posted AS "timePosted"`,
             [
-                userId,
+                data.userId,
                 data.itemId,
                 data.price
             ]
