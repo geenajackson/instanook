@@ -16,7 +16,7 @@ function NavBar() {
     const user = useContext(UserContext);
     return (
         <div>
-            <Navbar color="dark">
+            <Navbar color="light">
                 <NavbarBrand>
                     <NavLink exact to="/">
                         Instanook
