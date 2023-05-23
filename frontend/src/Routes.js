@@ -5,6 +5,7 @@ import Home from "./components/Home"
 import Logout from "./components/Logout";
 import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
+import ItemList from "./components/ItemList";
 
 function Routes({ loginUser, logoutUser, registerUser }) {
     return (
@@ -17,6 +18,9 @@ function Routes({ loginUser, logoutUser, registerUser }) {
             </Route>
             <Route exact path="/logout">
                 <Logout logoutUser={logoutUser} />
+            </Route>
+            <Route path="/items">
+                <ItemList />
             </Route>
             <Route path="/">
                 <Home />
