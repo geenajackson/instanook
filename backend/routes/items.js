@@ -12,13 +12,33 @@ const router = express.Router({ mergeParams: true });
 /** GET / [name] => { item }
  *
  * Returns { id, fileName, type, name}
+ * 
+ * Will return only one item.
  *
- * Authorization required: logged in
+ * Authorization required: none
  */
 router.get("/:name", async function (req, res, next) {
     try {
         const item = await Item.getByName(req.params.name);
         return res.json({ item });
+    }
+    catch (e) {
+        return next(e);
+    }
+})
+
+/** GET /search/ [name] => { item }
+ *
+ * Returns [{ id, fileName, type, name},...]
+ * 
+ * Will return array of items matching name.
+ *
+ * Authorization required: none
+ */
+router.get("/search/:name", async function (req, res, next) {
+    try {
+        const items = await Item.getAllByName(req.params.name);
+        return res.json({ items });
     }
     catch (e) {
         return next(e);
@@ -31,7 +51,7 @@ router.get("/:name", async function (req, res, next) {
  * 
  *Type includes: villagers, fish, bugs, fossils, art
  * 
- * Authorization required: logged in
+ * Authorization required: none
  */
 router.get("/:type", async function (req, res, next) {
     try {
