@@ -92,6 +92,34 @@ class Item {
         }
     };
 
+    /**Gets array of items in database via name.
+ * 
+ * If items are found, returns [{id, fileName, type, name}, ...]
+ * 
+ * If not, returns NotFoundError.
+ */
+
+    static async getAllByName(name) {
+        try {
+            const result = await db.query(
+                `SELECT id,
+                            file_name AS "fileName",
+                            type,
+                            name
+                    FROM items
+                    WHERE name ILIKE $1`,
+                [`%${name}%`],
+            );
+
+            const items = result.rows;
+
+            return items;
+        }
+        catch (e) {
+            throw new NotFoundError(`Items not found: ${name}`)
+        }
+    };
+
     /**Gets all items in database via type.
      * 
      * Type includes: villagers, fish, bugs, fossils, art
