@@ -61,6 +61,22 @@ class InstanookApi {
         return res;
     }
 
+    //Item Routes
+    static async getItem(name) {
+        let res = await this.request(`items/${name}`);
+        return res.item;
+    }
+
+    static async getItemsByName(name) {
+        let res = await this.request(`items/search/${name}`);
+        return res.items;
+    }
+
+    static async getItemsByType(type) {
+        let res = await this.request(`items/${type}`);
+        return res.items;
+    }
+
     //Listing Routes
     static async getListing(id) {
         let res = await this.request(`listings/${id}`);
