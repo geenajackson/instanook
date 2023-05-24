@@ -80,8 +80,14 @@ class InstanookApi {
     //Listing Routes
     static async getListing(id) {
         let res = await this.request(`listings/${id}`);
-        return res.lisitng;
+        return res.listing;
     }
+
+    static async getListings(query, value) {
+        let res = await this.request(`listings/`, { [query]: value });
+        return res.listings;
+    }
+
 
 }
 
