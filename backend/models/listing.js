@@ -105,13 +105,14 @@ class Listing {
    * - maxPrice
    * - listingType
    *
-   * Returns [{ id, username, itemName, itemType, price, timePosted, timeSold, listingType }, ...]
+   * Returns [{ id, username, itemName, itemFileName, itemType, price, timePosted, timeSold, listingType }, ...]
    * */
 
     static async findAll({ itemType, itemName, username, maxPrice, listingType } = {}) {
         let query = `SELECT l.id,
                             ul.user_id AS "userId",
                             i.name AS "itemName",
+                            i.file_name AS "itemFileName",
                             i.type AS "itemType",
                             l.price,
                             l.time_posted AS "timePosted",
