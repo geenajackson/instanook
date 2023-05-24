@@ -6,6 +6,8 @@ import Logout from "./components/Logout";
 import LoginForm from "./forms/LoginForm";
 import SignupForm from "./forms/SignupForm";
 import ItemList from "./components/ItemList";
+import ListingList from "./components/ListingList";
+import ListingDetails from "./components/ListingDetails";
 
 function Routes({ loginUser, logoutUser, registerUser }) {
     return (
@@ -18,6 +20,12 @@ function Routes({ loginUser, logoutUser, registerUser }) {
             </Route>
             <Route exact path="/logout">
                 <Logout logoutUser={logoutUser} />
+            </Route>
+            <Route exact path="/listings">
+                <ListingList />
+            </Route>
+            <Route path="/listings/:id">
+                <ListingDetails />
             </Route>
             <Route path="/items">
                 <ItemList />
