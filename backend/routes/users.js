@@ -11,12 +11,13 @@ const router = express.Router();
 
 /** GET /[username] => { user }
  *
- * Returns { username, email, friendCode }
+ * Returns { id, username, email, friendCode, cart }
+ * where cart is [{listingId, cartId, itemFileName, itemName, price}, ...]
  *
  * Authorization required: same user
  **/
 
-router.get("/:username", ensureCorrectUser, async function (req, res, next) {
+router.get("/:username", async function (req, res, next) {
     try {
         const user = await User.get(req.params.username);
         return res.json({ user });
