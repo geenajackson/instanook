@@ -58,7 +58,8 @@ class InstanookApi {
     //User Routes
     static async getUser(username) {
         let res = await this.request(`users/${username}`);
-        return res;
+        console.log(res)
+        return res.user;
     }
 
     //Item Routes
@@ -78,6 +79,15 @@ class InstanookApi {
     }
 
     //Listing Routes
+    static async createListing(userId, data) {
+        let res = await this.request(`listings/`, {
+            userId: userId,
+            itemId: data.itemId,
+            price: data.price
+        }, "post");
+        return res.listing;
+    }
+
     static async getListing(id) {
         let res = await this.request(`listings/${id}`);
         return res.listing;
@@ -86,6 +96,27 @@ class InstanookApi {
     static async getListings(query, value) {
         let res = await this.request(`listings/`, { [query]: value });
         return res.listings;
+    }
+
+    static async addToCart(listingId, userId) {
+        let res = await this.request(`listings/cart/${userId}/${listingId}`, {}, "post");
+        return res.cart;
+    }
+
+    static async removeFromCart(cartId) {
+        let res = await this.request(`listings/cart/${cartId}`, {}, "delete");
+        return res.cart;
+    }
+
+    static async sell(listing) {
+        console.log(listing)
+        let res = await this.request(`listings/cart/sell`, {
+            listingId: listing.listingId,
+            sellerId: listing.sellerId,
+            buyerId: listing.buyerId
+        }, "patch");
+        console.log(res)
+        return res;
     }
 
 
