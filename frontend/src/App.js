@@ -5,12 +5,14 @@ import './styles/App.css';
 import InstanookApi from "./api";
 import Routes from "./Routes";
 import UserContext from "./UserContext";
+import CartContext from "./CartContext";
 import useLocalStorage from "./useLocalStorage"
 import NavBar from "./Navbar";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
   const [token, setToken] = useLocalStorage("token");
 
   useEffect(
@@ -22,7 +24,8 @@ function App() {
             let { username } = decode(token);
             InstanookApi.token = token;
             let res = await InstanookApi.getUser(username);
-            setUser(res.user);
+            setUser(res);
+            setCart(res.cart);
           }
           catch (e) {
             console.log(e);
@@ -74,10 +77,12 @@ function App() {
 
   return (
     <div className="App">
-      <UserContext.Provider value={user}>
-        <NavBar />
-        <Routes loginUser={loginUser} logoutUser={logoutUser} registerUser={registerUser} />
-      </UserContext.Provider>
+      <CartContext.Provider value={cart}>
+        <UserContext.Provider value={user}>
+          <NavBar />
+          <Routes loginUser={loginUser} logoutUser={logoutUser} registerUser={registerUser} />
+        </UserContext.Provider>
+      </CartContext.Provider>
     </div>
   );
 }
