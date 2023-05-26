@@ -1,16 +1,28 @@
-import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardBody, CardTitle, ListGroup, ListGroupItem, Button } from "reactstrap"
+
+import InstanookApi from "../api";
+import UserContext from "../UserContext";
+import CartContext from "../CartContext";
 
 
 function Listing({ id, itemName, itemFileName, itemType, price, timePosted, timeSold }) {
-    const history = useHistory();
+    const user = useContext(UserContext);
+    const cart = useContext(CartContext);
     const imageSrc = `http://acnhapi.com/v1/images/${itemType}/${itemFileName}`
     const listingUrl = `listings/${id}`
 
-    async function handleSubmit(evt) {
+    async function addToCart(evt) {
         evt.preventDefault();
-        history.push("/listings")
+        await InstanookApi.addToCart(id, user.id);
+        window.location.reload();
+    }
+
+    async function removeFromCart(evt) {
+        evt.preventDefault();
+        await InstanookApi.removeFromCart(cart.find(c => c.listingId === id).cartId);
+        window.location.reload();
     }
 
     return (
@@ -26,7 +38,8 @@ function Listing({ id, itemName, itemFileName, itemType, price, timePosted, time
                     <ListGroupItem>Time Posted: {timePosted}</ListGroupItem>
                     {timeSold ? <ListGroupItem>Time Sold: {timeSold}</ListGroupItem> : ""}
                 </ListGroup>
-                <Button color="primary" onClick={handleSubmit}>Listing!</Button>
+                {cart.find(c => c.listingId === id) ? <Button color="secondary" onClick={removeFromCart}>In Cart!</Button> :
+                    <Button color="primary" onClick={addToCart}>Add to Cart</Button>}
             </CardBody>
         </Card>
     )
