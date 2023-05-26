@@ -91,14 +91,16 @@ class User {
 
     /** Given a username, return data about user.
      *
-     * Returns { username, email, friendCode }
+     * Returns { id, username, email, friendCode, cart }
+     * where cart is [{listingId, cartId, sellerId, itemFileName, itemName, itemType, price}, ...]
      *
      * Throws NotFoundError if user not found.
      **/
 
     static async get(username) {
         const userRes = await db.query(
-            `SELECT username,
+            `SELECT id,
+                    username,
                     email,
                     friend_code AS "friendCode"
             FROM users
@@ -109,6 +111,23 @@ class User {
         const user = userRes.rows[0];
 
         if (!user) throw new NotFoundError(`No user: ${username}`);
+
+        const userCart = await db.query(
+            `SELECT l.id AS "listingId",
+                ul.id AS "cartId",
+                l.user_id AS "sellerId",
+                i.name AS "itemName",
+                i.file_name AS "itemFileName",
+                i.type AS "itemType",
+                l.price
+            FROM listings l 
+            JOIN items AS i ON i.id = l.item_id
+            JOIN user_listings AS ul ON ul.listing_id = l.id
+            WHERE ul.user_id = $1
+                AND ul.listing_type = 'cart'`, [user.id]
+        );
+
+        user.cart = userCart.rows;
 
         return user;
     }
