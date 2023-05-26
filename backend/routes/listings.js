@@ -15,15 +15,16 @@ const router = express.Router({ mergeParams: true });
 
 /** POST / { listing } => { listing }
  *
- * listing should be {  }
+ * listing data should include { userId, itemId, price}
  *
- * Returns { id,  }
+ * Returns {userId, itemId, price, timePosted }
  *
  * Authorization required: logged in
  */
-router.post("/", ensureLoggedIn, async function (req, res, next) {
+router.post("/", async function (req, res, next) {
     try {
-
+        const listing = await Listing.create(req.body);
+        return res.json({ listing });
     }
     catch (e) {
         return next(e);
@@ -63,6 +64,65 @@ router.get("/:id", async function (req, res, next) {
     try {
         const listing = await Listing.get(req.params.id);
         return res.json({ listing });
+    }
+    catch (e) {
+        return next(e);
+    }
+})
+
+/** POST / cart/[userId]/[listingId] => { listing }
+ * 
+ * Adds a listing to a user's cart.
+ * Returns {cartId, listingId, listingType}
+ *
+ * Authorization required: logged in
+ */
+
+router.post("/cart/:userId/:listingId", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const cart = await Listing.addToCart(req.params.listingId, req.params.userId);
+        return res.json({ cart });
+    }
+    catch (e) {
+        return next(e);
+    }
+})
+
+/** PATCH / cart/[listingId] => { listing }
+ * 
+ * Data includes: {listingId, sellerId, buyerId}
+ * 
+ * Updates listings to have a type of "sold" and "bought" and a time sold.
+ * Returns {id, timeSold}
+ *
+ * Authorization required: logged in
+ */
+
+router.patch("/cart/sell", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const cart = await Listing.sell(req.body.listingId, req.body.sellerId, req.body.buyerId);
+        return res.json({ cart })
+    }
+    catch (e) {
+        return next(e);
+    }
+})
+
+/** DELETE / cart/[cartId] => { id }
+ * 
+ * Given an id from user_listings as cartId, removes listing from cart.
+ * 
+ * This deletes the entry from the table.
+ * 
+ * Returns {id}
+ *
+ * Authorization required: logged in
+ */
+
+router.delete("/cart/:cartId", async function (req, res, next) {
+    try {
+        const cart = await Listing.removeFromCart(req.params.cartId);
+        return res.json({ cart });
     }
     catch (e) {
         return next(e);
