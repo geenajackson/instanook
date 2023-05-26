@@ -15,13 +15,13 @@ class Listing {
      * Returns {userId, itemId, price, timePosted}
      */
 
-    static async create(userId, data) {
+    static async create(data) {
         const result = await db.query(
             `INSERT INTO listings (user_id,
                                    item_id,
                                    price)
              VALUES ($1, $2, $3)
-             RETURNING user_id AS "userId", item_id AS "itemId", price, time_posted AS "timePosted"`,
+             RETURNING id, user_id AS "userId", item_id AS "itemId", price, time_posted AS "timePosted"`,
             [
                 data.userId,
                 data.itemId,
@@ -36,7 +36,7 @@ class Listing {
                                         listing_id,
                                         listing_type)
             VALUES ($1, $2, $3)`,
-            [userId, listing.id, "curr"]
+            [listing.userId, listing.id, "curr"]
         )
 
         return listing;
