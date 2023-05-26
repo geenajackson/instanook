@@ -34,8 +34,22 @@ function NavBar() {
                     {user ?
                         [<NavItem>
                             <Navlink>
+                                <NavLink exact to="/items">
+                                    Create New Listing
+                                </NavLink>
+                            </Navlink>
+                        </NavItem>,
+                        <NavItem>
+                            <Navlink>
                                 <NavLink key="profile" exact to="/profile">
                                     Profile
+                                </NavLink>
+                            </Navlink>
+                        </NavItem>,
+                        <NavItem>
+                            <Navlink>
+                                <NavLink key="cart" exact to="/cart">
+                                    Cart
                                 </NavLink>
                             </Navlink>
                         </NavItem>,
