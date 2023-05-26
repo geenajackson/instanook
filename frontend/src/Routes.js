@@ -8,6 +8,7 @@ import SignupForm from "./forms/SignupForm";
 import ItemList from "./components/ItemList";
 import ListingList from "./components/ListingList";
 import ListingDetails from "./components/ListingDetails";
+import Cart from "./components/Cart";
 
 function Routes({ loginUser, logoutUser, registerUser }) {
     return (
@@ -29,6 +30,9 @@ function Routes({ loginUser, logoutUser, registerUser }) {
             </Route>
             <Route path="/items">
                 <ItemList />
+            </Route>
+            <Route exact path="/cart">
+                <Cart />
             </Route>
             <Route path="/">
                 <Home />
