@@ -11,7 +11,6 @@ function LoginForm({ loginUser }) {
 
     async function handleSubmit(evt) {
         evt.preventDefault();
-        console.log(formData)
         let res = await loginUser(formData);
 
         if (res) {
