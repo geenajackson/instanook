@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardBody, CardTitle, ListGroup, ListGroupItem } from "reactstrap"
+import moment from "moment";
 
 import InstanookApi from "../api";
 
@@ -8,6 +9,8 @@ import InstanookApi from "../api";
 function ListingDetails() {
     const [isLoading, setIsLoading] = useState(true);
     const [details, setDetails] = useState("");
+
+    const datePosted = moment(details.timePosted, "YYYY-MM-DDTHH:mm").format("l h:mma");
 
     let { id } = useParams();
 
@@ -55,7 +58,7 @@ function ListingDetails() {
                 <ListGroup>
                     <ListGroupItem>Price: {details.price}</ListGroupItem>
                     <ListGroupItem>Seller: {details.username}</ListGroupItem>
-                    <ListGroupItem>Time Posted: {details.timePosted}</ListGroupItem>
+                    <ListGroupItem>Time Posted: {datePosted}</ListGroupItem>
                 </ListGroup>
             </CardBody>
         </Card>
