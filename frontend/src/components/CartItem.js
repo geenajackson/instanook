@@ -5,6 +5,8 @@ import { Card, CardBody, CardTitle, ListGroup, ListGroupItem, Button } from "rea
 import InstanookApi from "../api";
 import CartContext from "../CartContext";
 
+import "../styles/Card.css"
+
 
 function CartItem({ id, itemName, itemFileName, itemType, price }) {
     const cart = useContext(CartContext);
@@ -18,10 +20,10 @@ function CartItem({ id, itemName, itemFileName, itemType, price }) {
     }
 
     return (
-        <Card color="light" className="Card">
+        <Card className="Card">
             <CardBody>
                 <CardTitle tag="h3">
-                    <Link to={listingUrl}>
+                    <Link className="Card" to={listingUrl}>
                         <img alt={itemName} src={imageSrc} width="25%" height="25%" />
                         {itemName}
                     </Link></CardTitle>
