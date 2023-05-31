@@ -9,6 +9,7 @@ import ItemList from "./components/ItemList";
 import ListingList from "./components/ListingList";
 import ListingDetails from "./components/ListingDetails";
 import Cart from "./components/Cart";
+import History from "./components/History";
 
 function Routes({ loginUser, logoutUser, registerUser }) {
     return (
@@ -33,6 +34,9 @@ function Routes({ loginUser, logoutUser, registerUser }) {
             </Route>
             <Route exact path="/cart">
                 <Cart />
+            </Route>
+            <Route exact path="/history">
+                <History />
             </Route>
             <Route path="/">
                 <Home />
