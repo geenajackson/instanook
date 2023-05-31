@@ -41,6 +41,8 @@ function ItemList() {
 
     return (
         <div>
+            <p>Search for your item! Items can include: villagers, bugs, fish, fossils, and pieces of art!</p>
+            <p>Don't know what to add? Try searching for "butterfly" or "painting"!</p>
             <SearchForm fetchData={fetchData} />
             {items.map(item => (
                 <Item
