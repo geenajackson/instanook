@@ -1,0 +1,10 @@
+a:link,
+a:visited {
+    font-family: 'Cherry Bomb One', cursive;
+    text-decoration: none;
+    color: #fffffa
+}
+
+a:hover {
+    color: #fff563;
+}

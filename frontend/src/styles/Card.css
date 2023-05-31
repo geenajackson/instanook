@@ -1,0 +1,14 @@
+/* .Card {
+    background-color: #81f1f7;
+} */
+
+a.Card:link,
+a.Card:visited {
+    font-family: 'Quicksand', sans-serif;
+    text-decoration: underline;
+    color: black
+}
+
+a.Card:hover {
+    color: gray
+}

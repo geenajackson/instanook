@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Quicksand', 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 
+This is the main color palette used for Instanook, based off of Animal Crossing: New Horizons.
+Colors taken from https://www.color-hex.com/color-palette/95498
+
+mint green: #9dffb0	(157,255,176)
+light blue: #81f1f7	(129,241,247)
+off-white: #fffffa	(255,255,250)
+caramel brown: #c48d3f	(196,141,63)
+soft yellow: #fff563	(255,245,99) 
+*/
