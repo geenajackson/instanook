@@ -13,6 +13,7 @@ class InstanookApi {
     static token;
 
     static async request(endpoint, data = {}, method = "get") {
+        console.debug("API Call:", endpoint, data, method);
         //generic request method to interact with API.
         const url = `${BASE_URL}/${endpoint}`;
         const headers = { Authorization: `Bearer ${InstanookApi.token}` };
@@ -58,7 +59,6 @@ class InstanookApi {
     //User Routes
     static async getUser(username) {
         let res = await this.request(`users/${username}`);
-        console.log(res)
         return res.user;
     }
 
@@ -95,6 +95,14 @@ class InstanookApi {
 
     static async getListings(query, value) {
         let res = await this.request(`listings/`, { [query]: value });
+        return res.listings;
+    }
+
+    static async getHistory(username) {
+        let res = await this.request(`listings/`, {
+            username: username,
+            listingType: "bought"
+        });
         return res.listings;
     }
 
