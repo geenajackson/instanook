@@ -8,6 +8,7 @@ import {
     NavLink as Navlink
 } from 'reactstrap';
 
+import "./styles/Navbar.css"
 import UserContext from "./UserContext";
 
 //put multiple NavLinks in an array inside of the conditional
@@ -15,24 +16,25 @@ import UserContext from "./UserContext";
 function NavBar() {
     const user = useContext(UserContext);
     return (
-        <div>
-            <Navbar color="light">
-                <NavbarBrand>
-                    <NavLink exact to="/">
+        <div className="NavBar">
+            <Navbar >
+                <NavbarBrand >
+                    <NavLink className="NavbarBrand" exact to="/">
                         Instanook
                     </NavLink>
                 </NavbarBrand>
                 <Nav>
-                    <NavItem>
-                        <Navlink>
-                            <NavLink exact to="/listings">
-                                Listings
-                            </NavLink>
-                        </Navlink>
-                    </NavItem>
+
 
                     {user ?
                         [<NavItem>
+                            <Navlink>
+                                <NavLink exact to="/listings">
+                                    Listings
+                                </NavLink>
+                            </Navlink>
+                        </NavItem>,
+                        <NavItem>
                             <Navlink>
                                 <NavLink exact to="/items">
                                     Create New Listing
@@ -41,8 +43,8 @@ function NavBar() {
                         </NavItem>,
                         <NavItem>
                             <Navlink>
-                                <NavLink key="profile" exact to="/profile">
-                                    Profile
+                                <NavLink key="history" exact to="/history">
+                                    History
                                 </NavLink>
                             </Navlink>
                         </NavItem>,
